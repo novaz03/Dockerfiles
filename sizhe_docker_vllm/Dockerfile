@@ -17,9 +17,6 @@ RUN pip install --no-cache-dir \
     "transformers==4.57.1" \
     "tokenizers>=0.19.1"
 
-# Optional: sanity-check what the base image actually contains
-RUN python -c "import vllm; print('vLLM version:', vllm.__version__)" \
- && python -c "import transformers; print('Transformers version:', transformers.__version__)"
 
 ENV MODEL_NAME="Qwen/Qwen3-30B-A3B-Instruct-2507"
 ENV VLLM_ARGS=""
