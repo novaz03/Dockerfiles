@@ -15,7 +15,7 @@ RUN pip install --no-cache-dir \
 # Pin to a known-good Transformers/tokenizers combo for Qwen + vLLM 0.11.x
 RUN pip install --no-cache-dir \
     "transformers==4.57.1" \
-    "tokenizers>=0.19.1"
+    "tokenizers>=0.19.1" \
     flashinfer
 
 
