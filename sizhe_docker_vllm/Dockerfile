@@ -1,6 +1,8 @@
-# Use the official vLLM image to ensure latest model support (Qwen3)
-# Check https://hub.docker.com/r/vllm/vllm-openai/tags for specific versions
-FROM vllm/vllm-openai:latest
+# Pin to RunPod's CUDA/flash-attn tuned vLLM worker (matches runpod/worker-v1-vllm)
+FROM runpod/worker-v1-vllm:stable-cuda12.1.0
+
+ARG FLASH_ATTN_VERSION=2.6.1
+ENV FLASH_ATTN_VERSION=${FLASH_ATTN_VERSION}
 
 USER root
 
@@ -9,8 +11,8 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends ffmpeg curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install RunPod SDK, requests, and faster-whisper
-RUN pip install --no-cache-dir runpod requests faster-whisper
+# Install RunPod SDK, requests, faster-whisper, and pin flash-attn to the base CUDA toolchain
+RUN pip install --no-cache-dir runpod requests faster-whisper "flash-attn==${FLASH_ATTN_VERSION}"
 
 # Environment variables
 # MODEL_NAME can be overridden at runtime
