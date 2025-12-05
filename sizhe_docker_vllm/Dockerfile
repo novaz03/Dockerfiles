@@ -16,6 +16,7 @@ RUN pip install --no-cache-dir \
 RUN pip install --no-cache-dir \
     "transformers==4.57.1" \
     "tokenizers>=0.19.1"
+    flashinfer
 
 
 ENV MODEL_NAME="Qwen/Qwen3-30B-A3B-Instruct-2507"
