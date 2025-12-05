@@ -153,6 +153,41 @@ until curl -s http://localhost:8000/health > /dev/null 2>&1; do
 done
 
 echo "✓ vLLM is ready and healthy!"
+# ---- Make pip-installed cuDNN discoverable for GPU Whisper ----
+CUDNN_PIP_LIB=$(python3 - <<'PY'
+import os
+try:
+    import nvidia.cudnn
+    base = os.path.dirname(nvidia.cudnn.__file__)
+    lib = os.path.join(base, "lib")
+    print(lib if os.path.isdir(lib) else "")
+except Exception:
+    print("")
+PY
+)
+
+if [ -n "${CUDNN_PIP_LIB}" ]; then
+  export LD_LIBRARY_PATH="${CUDNN_PIP_LIB}:/usr/local/cuda/lib64:/usr/lib/x86_64-linux-gnu:${LD_LIBRARY_PATH:-}"
+  echo "Using cuDNN from: ${CUDNN_PIP_LIB}"
+else
+  export LD_LIBRARY_PATH="/usr/local/cuda/lib64:/usr/lib/x86_64-linux-gnu:${LD_LIBRARY_PATH:-}"
+  echo "WARNING: pip cuDNN not found"
+fi
+
+python3 - <<'PY'
+import ctypes, sys
+names = ["libcudnn_ops.so.9.1.0","libcudnn_ops.so.9.1","libcudnn_ops.so.9"]
+for n in names:
+    try:
+        ctypes.CDLL(n)
+        print("Loaded:", n)
+        sys.exit(0)
+    except OSError:
+        pass
+print("Could not load cuDNN 9 ops library.")
+sys.exit(1)
+PY
+
 
 # --- 7. Start Handler ---
 echo "Starting Runpod handler..."
