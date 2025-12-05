@@ -5,18 +5,21 @@ USER root
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ffmpeg curl git \
     && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    nvidia-cuda-toolkit \
+    && rm -rf /var/lib/apt/lists/*
 
 # Keep base vLLM/torch/flash-attn intact; avoid eager upgrades
 RUN pip install --no-cache-dir \
     runpod \
     requests \
-    faster-whisper
+    faster-whisper \
+    flashinfer-python
 
 # Pin to a known-good Transformers/tokenizers combo for Qwen + vLLM 0.11.x
 RUN pip install --no-cache-dir \
     "transformers==4.57.1" \
-    "tokenizers>=0.19.1" \
-    flashinfer
+    "tokenizers>=0.19.1" 
 
 
 ENV MODEL_NAME="Qwen/Qwen3-30B-A3B-Instruct-2507"
