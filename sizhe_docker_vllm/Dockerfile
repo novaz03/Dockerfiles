@@ -35,6 +35,13 @@ ENV WHISPER_DEVICE="cuda"
 ENV WHISPER_COMPUTE_TYPE="float16"
 ENV PYTHONUNBUFFERED=1
 
+# Network volume configuration
+ENV BASE_PATH=/runpod-volume
+ENV MODELS_CACHE_DIR=/runpod-volume/models
+
+# Create mount point for network volume
+RUN mkdir -p /runpod-volume /runpod-volume/models
+
 # Work directory
 WORKDIR /app
 
@@ -46,12 +53,23 @@ COPY .env /app/.env
 # Make the start script executable
 RUN chmod +x /app/start.sh
 
+# --- NETWORK VOLUME APPROACH (RECOMMENDED) ---
+# Pre-download model to /runpod-volume using a temporary pod, then use this image
+# This keeps the Docker image small and reduces cold start time dramatically
+# See instructions below
+# ---------------------------------------
+
 # --- OPTIONAL: BAKE MODEL INTO IMAGE ---
-# Uncomment the following lines if you want to download the model during build 
-# (Reduces cold start time but makes image larger)
+# Only uncomment if you DON'T want to use network volumes
+# (Not recommended for 30B model - creates ~60GB+ image)
 # ARG HF_TOKEN_BUILD
 # ENV HF_TOKEN=$HF_TOKEN_BUILD
-RUN python3 -c "from huggingface_hub import snapshot_download; snapshot_download(repo_id='Qwen/Qwen3-30B-A3B-Instruct-2507')"
+# RUN pip install huggingface-hub && \
+#     python3 -c "from huggingface_hub import snapshot_download; \
+#     snapshot_download(repo_id='Qwen/Qwen3-30B-A3B-Instruct-2507', \
+#     local_dir='/app/models/Qwen3-30B-A3B-Instruct-2507', \
+#     local_dir_use_symlinks=False)"
+# ENV MODEL_NAME="/app/models/Qwen3-30B-A3B-Instruct-2507"
 # ---------------------------------------
 
 # Set the entrypoint
