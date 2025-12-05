@@ -11,15 +11,14 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends ffmpeg curl git \
     && rm -rf /var/lib/apt/lists/*
 
-# Install RunPod SDK, requests, faster-whisper, and upgrade transformers to a version
-# that recognizes newer Qwen architectures (e.g., qwen3/qwen3_moe). flash-attn comes
-# from the base image.
-RUN pip install --no-cache-dir \
+# Install RunPod SDK, requests, faster-whisper, and a bleeding-edge Transformers (from GitHub)
+# so qwen3/qwen3_moe architectures are recognized. Keep base vLLM/torch/flash-attn intact.
+RUN pip install --no-cache-dir --upgrade --upgrade-strategy eager \
     runpod \
     requests \
     faster-whisper \
-    "transformers>=4.45.0" \
-    "tokenizers>=0.19.0"
+    "transformers @ git+https://github.com/huggingface/transformers.git" \
+    tokenizers
 
 # Environment variables
 # MODEL_NAME can be overridden at runtime
