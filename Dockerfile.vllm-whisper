@@ -1,0 +1,22 @@
+# 基于 RunPod 官方 vLLM worker 镜像 (Docker Hub 公开版本)
+FROM runpod/worker-v1-vllm:stable-cuda12.1.0
+
+# 安装 ffmpeg (Whisper 依赖) 并创建 python symlink
+USER root
+RUN apt-get update && apt-get install -y ffmpeg && rm -rf /var/lib/apt/lists/* \
+    && ln -sf /usr/bin/python3 /usr/bin/python || true
+
+# 安装 faster-whisper
+RUN pip install --no-cache-dir faster-whisper
+
+# 复制自定义 handler
+COPY handler_vllm_whisper.py /handler_vllm_whisper.py
+
+# 环境变量
+ENV WHISPER_MODEL=large-v3-turbo
+ENV WHISPER_DEVICE=cuda
+ENV WHISPER_COMPUTE_TYPE=float16
+ENV PYTHONUNBUFFERED=1
+
+# 启动命令 - 运行我们的 handler
+CMD ["python", "-u", "/handler_vllm_whisper.py"]
