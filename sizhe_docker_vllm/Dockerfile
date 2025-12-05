@@ -22,7 +22,7 @@ RUN pip install --no-cache-dir --upgrade --upgrade-strategy eager \
 
 # Environment variables
 # MODEL_NAME can be overridden at runtime
-ENV MODEL_NAME="Qwen/Qwen2.5-7B-Instruct"
+ENV MODEL_NAME="Qwen/Qwen3-30B-A3B-Instruct-2507"
 ENV VLLM_ARGS=""
 # ENV HF_TOKEN=""
 ENV MAX_MODEL_LEN=4096
