@@ -1,5 +1,5 @@
 # Pin to RunPod's CUDA/flash-attn tuned vLLM worker (matches runpod/worker-v1-vllm)
-FROM runpod/worker-v1-vllm:stable-cuda12.1.0
+FROM runpod/worker-v1-vllm:v2.11.0
 
 # flash-attn version is provided by the base image; override via pip only if you know
 # a matching wheel exists for the bundled CUDA/torch combo.
