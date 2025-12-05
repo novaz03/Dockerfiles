@@ -18,12 +18,6 @@ cleanup() {
 trap 'cleanup 1' SIGTERM SIGINT
 
 # --- 2. Environment Setup ---
-if [ -f "${APP_DIR}/.env" ]; then
-  echo "Loading ${APP_DIR}/.env into environment..."
-  set -a
-  source "${APP_DIR}/.env"
-  set +a
-fi
 
 # --- 3. Model Path Detection ---
 MODEL_PATH="${MODEL_NAME}"
