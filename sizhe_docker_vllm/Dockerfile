@@ -6,9 +6,9 @@ ENV FLASH_ATTN_VERSION=${FLASH_ATTN_VERSION}
 
 USER root
 
-# Install ffmpeg (for Whisper) and curl (for health checks)
+# Install ffmpeg (for Whisper), curl (health checks), and git (flash-attn build fallback)
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends ffmpeg curl \
+    && apt-get install -y --no-install-recommends ffmpeg curl git \
     && rm -rf /var/lib/apt/lists/*
 
 # Install RunPod SDK, requests, faster-whisper, and pin flash-attn to the base CUDA toolchain
