@@ -51,7 +51,7 @@ RUN chmod +x /app/start.sh
 # (Reduces cold start time but makes image larger)
 # ARG HF_TOKEN_BUILD
 # ENV HF_TOKEN=$HF_TOKEN_BUILD
-# RUN python3 -c "from huggingface_hub import snapshot_download; snapshot_download(repo_id='Qwen/Qwen2.5-7B-Instruct')"
+RUN python3 -c "from huggingface_hub import snapshot_download; snapshot_download(repo_id='Qwen/Qwen3-30B-A3B-Instruct-2507')"
 # ---------------------------------------
 
 # Set the entrypoint
